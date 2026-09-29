@@ -28,6 +28,7 @@
             },
             "configurations": {
               "production": {
+                "baseHref":"/speech-to-text-in-angular-docx-editor/",
                 "fileReplacements": [
                   {
                     "replace": "src/environments/environment.ts",
