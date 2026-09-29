@@ -1,0 +1,213 @@
+/* ===== DictationBar (reusable Speech-to-Text bar for Document Editor) =====
+   Clinical UI: calm teal accent, accessible focus rings, clear listening state.
+   The bar sits above the editor — NOT in the ribbon/toolbar.
+
+   Required Syncfusion theme CSS so the mic glyph font (e-icons) and the
+   SpeechToText button render correctly. */
+@import '../node_modules/@syncfusion/ej2-icons/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-base/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-buttons/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-inputs/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-popups/styles/material.css';
+@import '../node_modules/@syncfusion/ej2-angular-documenteditor/styles/material.css';
+
+/* Editor + dictation bar laid out as a row; bar docks to the right */
+.stt-editor-row {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.stt-editor-row__editor {
+    flex: 1 1 auto;
+    min-width: 0; /* allow shrinking so the editor can scroll/resize */
+}
+
+.stt-editor-row__bar {
+    flex: 0 0 240px;
+    display: flex;
+}
+
+/* Right-side vertical panel: column layout (header on top, mic, status, divider, language) */
+#speech_to_text_bar.e-dictation-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px 14px;
+    background: linear-gradient(180deg, #f4fbfb 0%, #e7f5f5 100%);
+    border: 1px solid #cfe6e6;
+    border-left: 4px solid #0d8b8b;
+    border-radius: 6px;
+    font-family: "Segoe UI", "GeezaPro", "DejaVu Serif", sans-serif;
+    box-sizing: border-box;
+    min-height: 360px;
+    width: 100%;
+}
+
+.e-dictation-bar__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+
+.e-dictation-bar__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0d4f4f;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+/* Small heartbeat / medical icon next to the title */
+.e-dictation-bar__icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: #0d8b8b;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 12h3l2-5 4 10 2-5h7' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+            mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M3 12h3l2-5 4 10 2-5h7' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/contain no-repeat;
+}
+
+/* Mic host: Syncfusion renders the SpeechToText button inside this div */
+.e-dictation-bar__mic {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+/* SpeechToText button theming — match the teal accent */
+.e-dictation-bar__mic-btn.e-speech-to-text,
+.e-dictation-bar__mic-btn.e-btn.e-speech-to-text {
+    background: #0d8b8b !important;
+    border-color: #0d8b8b !important;
+    color: #fff !important;
+    box-shadow: 0 1px 2px rgba(13, 139, 139, 0.25);
+    transition: background 120ms ease;
+    border-radius: 50% !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    padding: 0 !important;
+    align-self: center;
+}
+
+.e-dictation-bar__mic-btn.e-speech-to-text:hover:not(.e-disabled) {
+    background: #0a7373 !important;
+    border-color: #0a7373 !important;
+}
+
+.e-dictation-bar__mic-btn.e-speech-to-text:focus-visible {
+    outline: 3px solid #ffd166;
+    outline-offset: 2px;
+}
+
+/* Built-in mic glyph font + size */
+.e-dictation-bar__mic-btn .e-btn-icon,
+.e-dictation-bar__mic-btn .e-listen-icon,
+.e-dictation-bar__mic-btn .e-listen-stop {
+    font-family: "e-icons" !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    color: #fff !important;
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Listening state — gentle red pulse + ring so users can see it's live */
+.e-dictation-bar--listening .e-dictation-bar__mic-btn.e-speech-to-text,
+.e-dictation-bar--listening .e-dictation-bar__mic-btn.e-btn.e-speech-to-text {
+    background: #b21f1f !important;
+    border-color: #b21f1f !important;
+    animation: e-dictation-bar-mic-pulse 1.2s ease-in-out infinite;
+    box-shadow: 0 0 0 0 rgba(178, 31, 31, 0.55);
+}
+
+@keyframes e-dictation-bar-mic-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(178, 31, 31, 0.55); }
+    70%  { box-shadow: 0 0 0 12px rgba(178, 31, 31, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(178, 31, 31, 0); }
+}
+
+/* Status text */
+.e-dictation-bar__status {
+    font-size: 13px;
+    color: #4a5e5e;
+    line-height: 1.4;
+    flex: 0 0 auto;
+    text-align: center;
+    word-break: break-word;
+}
+
+.e-dictation-bar--listening .e-dictation-bar__status {
+    color: #b21f1f;
+    font-weight: 600;
+    animation: e-dictation-bar-status-pulse 1.4s ease-in-out infinite;
+}
+
+.e-dictation-bar--disabled .e-dictation-bar__status {
+    color: #b21f1f;
+    font-weight: 600;
+}
+
+@keyframes e-dictation-bar-status-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.55; }
+}
+
+/* Divider + language picker */
+.e-dictation-bar__divider {
+    width: auto;
+    height: 1px;
+    background: #cfe6e6;
+    flex: 0 0 auto;
+    margin: 4px 0;
+}
+
+.e-dictation-bar__lang-label {
+    font-size: 12px;
+    color: #4a5e5e;
+    font-weight: 500;
+    flex: 0 0 auto;
+}
+
+.e-dictation-bar__lang {
+    font-family: inherit;
+    font-size: 13px;
+    color: #0d4f4f;
+    padding: 4px 8px;
+    border: 1px solid #cfe6e6;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    min-width: 130px;
+    flex: 0 0 auto;
+}
+
+.e-dictation-bar__lang:focus-visible {
+    outline: 2px solid #0d8b8b;
+    outline-offset: 1px;
+}
+
+.e-dictation-bar__hint {
+    display: none; /* keep the bar compact; the status text carries the same info */
+}
+
+@media (max-width: 900px) {
+    .stt-editor-row {
+        flex-direction: column;
+    }
+    .stt-editor-row__bar {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+    #speech_to_text_bar.e-dictation-bar {
+        min-height: 0;
+    }
+}
